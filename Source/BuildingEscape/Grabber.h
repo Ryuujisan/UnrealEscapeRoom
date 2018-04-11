@@ -29,10 +29,14 @@ public:
 	void Relase();
 	const FHitResult GetFirstPhysicsBodyInReach();
 
+	FVector GetReachLineEnd();
+	FVector GetLineStart();
+
 private:
 	float reach = 100.f;
 	//UPhysicsHandleComponent * physickHandle = nullptr;
 	UPhysicsHandleComponent* physickHandle = nullptr;
 	UInputComponent* inputComponent;
 };
+
 
