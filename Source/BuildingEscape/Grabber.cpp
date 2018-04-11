@@ -29,6 +29,11 @@ void UGrabber::BeginPlay()
 	inputComponent = GetOwner()->FindComponentByClass<UInputComponent>();
 
 
+	FindComponent();
+}
+
+void UGrabber::FindComponent()
+{
 	if (physickHandle)
 	{
 
@@ -53,17 +58,15 @@ void UGrabber::BeginPlay()
 void UGrabber::Grab()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Press Grab"));
+	GetFirstPhysicsBodyInReach();
 }
 
 void UGrabber::Relase()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Relase Grab"));
 }
-// Called every frame
-void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+const FHitResult UGrabber::GetFirstPhysicsBodyInReach()
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
 	FVector playerViewPoint;
 	FRotator playerRotate;
 
@@ -76,7 +79,7 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	FString rotateToString = playerRotate.ToString();
 
 	//UE_LOG(LogTemp, Warning, TEXT("Location: %s, Postion: %s"), *playerViewPoint.ToString(), *playerRotate.ToString());
-	
+
 	FVector lineTraceEnd = playerViewPoint + (playerRotate.Vector() * reach);
 
 	DrawDebugLine(
@@ -106,5 +109,14 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Hit: %s"), *(actorHit->GetName()));
 	}
+
+	return Hit;
+}
+// Called every frame
+void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+
 }
 
