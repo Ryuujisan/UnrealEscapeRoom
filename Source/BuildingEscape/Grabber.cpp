@@ -3,6 +3,7 @@
 #include "Grabber.h"
 #include "GameFramework/Actor.h"
 #include "Runtime/Engine/Classes/Engine/World.h"
+#include "Components/PrimitiveComponent.h"
 #include "DrawDebugHelpers.h"
 
 #define OUT
@@ -58,12 +59,25 @@ void UGrabber::FindComponent()
 void UGrabber::Grab()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Press Grab"));
-	GetFirstPhysicsBodyInReach();
+	auto body = GetFirstPhysicsBodyInReach();
+	auto ComponentToGrab = body.GetComponent();
+
+	if (body.GetActor() != nullptr)
+	{
+		physickHandle->GrabComponent(
+			ComponentToGrab,
+			NAME_None,
+			ComponentToGrab->GetOwner()->GetActorLocation(),
+			true
+		);
+	}
 }
 
 void UGrabber::Relase()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Relase Grab"));
+
+	physickHandle->ReleaseComponent();
 }
 const FHitResult UGrabber::GetFirstPhysicsBodyInReach()
 {
@@ -117,6 +131,24 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	FVector playerViewPoint;
+	FRotator playerRotate;
 
+	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(
+		OUT playerViewPoint,
+		OUT playerRotate
+	);
+
+	FString viePointToString = playerViewPoint.ToString();
+	FString rotateToString = playerRotate.ToString();
+
+	//UE_LOG(LogTemp, Warning, TEXT("Location: %s, Postion: %s"), *playerViewPoint.ToString(), *playerRotate.ToString());
+
+	FVector lineTraceEnd = playerViewPoint + (playerRotate.Vector() * reach);
+
+	if (physickHandle->GrabbedComponent)
+	{
+		physickHandle->SetTargetLocation(lineTraceEnd);
+	}
 }
 
