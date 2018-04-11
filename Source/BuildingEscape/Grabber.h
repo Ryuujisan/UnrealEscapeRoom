@@ -1,44 +1,35 @@
 // CopyRight Ryuu Sakurai 2018
 
 #pragma once
-#include "Engine/TriggerVolume.h"
 #include "CoreMinimal.h"
+#include "Components/InputComponent.h"
+#include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "Components/ActorComponent.h"
-#include "OpenDoor.generated.h"
-
+#include "Grabber.generated.h"
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class BUILDINGESCAPE_API UOpenDoor : public UActorComponent
+class BUILDINGESCAPE_API UGrabber : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:	
 	// Sets default values for this component's properties
-	UOpenDoor();
+	UGrabber();
 
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-	void OpenDor();
-	void CloseDor();
-
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	void Grab();
+	void Relase();
 
 private:
-	UPROPERTY(VisibleAnywhere)
-	float openAngle = 90.f;
-
-	UPROPERTY(EditAnywhere)
-	ATriggerVolume* PressurePlate;
-
-	UPROPERTY(EditAnywhere)
-	float doorCloseDelay = 1.f;
-
-	float lastDorOpenTime = 1.0f;
-
-	AActor* actorThatOpens;
-	AActor* owner;
+	float reach = 100.f;
+	//UPhysicsHandleComponent * physickHandle = nullptr;
+	UPhysicsHandleComponent* physickHandle = nullptr;
+	UInputComponent* inputComponent;
 };
+
